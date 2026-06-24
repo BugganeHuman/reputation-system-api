@@ -6,10 +6,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from django.utils import timezone
 from datetime import timedelta
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
+from .models import Profile
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from .serializers import ProfileSerializer
 
 
 class CorrectTokenObtainPairView(TokenObtainPairView):
@@ -17,21 +20,28 @@ class CorrectTokenObtainPairView(TokenObtainPairView):
     #authentication_classes = [JWTAuthentication, users.authentication.BotAuthentication]
 
 
+
+class ProfileViewSet(ReadOnlyModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAdminUser]
+
+
+
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def get_me(request):
     user = request.user
-    username = user.username
-    email = user.email
-    is_staff = user.is_staff
-    is_superuser = user.is_superuser
+    profile = Profile.objects.get(owner=user)
+    first_name = profile.first_name
+    last_name = profile.last_name
+    reputation = profile.reputation
 
     results = {
-        'username' : username,
-        'email' : email,
-        'is_staff' : is_staff,
-        'is_superuser' : is_superuser
+        'first_name' : first_name,
+        'last_name' : last_name,
+        'reputation' : reputation
     }
 
     return Response(results)

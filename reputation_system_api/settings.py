@@ -8,15 +8,11 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,7 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'users'
+    'users',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -64,11 +61,15 @@ WSGI_APPLICATION = 'reputation_system_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        #'HOST': os.getenv("DB_HOST"),
+        'HOST': "db",
+        'PORT': os.getenv("DB_PORT")
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -100,7 +101,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    #'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -113,6 +114,13 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 AUTH_USER_MODEL = 'auth.User'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'REP API',
+    'DESCRIPTION': 'Documentation for API REP',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False, }
+
 
 LANGUAGE_CODE = 'en-us'
 
