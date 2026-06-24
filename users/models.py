@@ -20,7 +20,7 @@ class Profile (models.Model):
 def auto_create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
-            first_name=instance.first_name,
+            first_name=instance.username,
             last_name = instance.last_name,
             reputation=100,
             owner = instance
