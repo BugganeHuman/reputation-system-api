@@ -1,5 +1,4 @@
 from django.urls import path, include
-from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import  CorrectTokenObtainPairView, get_me, ProfileViewSet
 from rest_framework.routers import DefaultRouter
